@@ -72,6 +72,8 @@ try:
 except Exception as e:
     st.error(f"Error loading saved feature files: {e}")
     st.stop()
+
+image_paths = [normalize_cloud_path(p) for p in image_paths]
     
 # =========================================================
 # Session State Initialization
@@ -102,7 +104,21 @@ def load_rgb_image(image_path):
 def image_to_bytes(image_path):
     with open(image_path, "rb") as f:
         return f.read()
+        
+def normalize_cloud_path(path):
+    """
+    Convert Windows-style stored paths into paths that work on Streamlit Cloud/Linux.
+    """
+    if path is None:
+        return None
 
+    # Convert backslashes to forward slashes first
+    path = path.replace("\\", "/")
+
+    # Normalize the path for the current OS
+    path = os.path.normpath(path)
+
+    return path
 
 def create_zip_from_results(results):
     zip_buffer = BytesIO()
@@ -621,7 +637,8 @@ if uploaded_file is not None:
 
                 for j, result in enumerate(row_results, start=i):
                     with cols[j - i]:
-                        result_img = Image.open(result["image_path"])
+                        result_path = normalize_cloud_path(result["image_path"])
+                        result_img = Image.open(result_path)
                         st.image(result_img, use_container_width=True)
 
                         st.write(f"**Category:** {result['label']}")
@@ -633,7 +650,7 @@ if uploaded_file is not None:
                         else:
                             st.write(f"**Similarity:** {result['score'] * 100:.2f}%")
 
-                        image_bytes = image_to_bytes(result["image_path"])
+                        image_bytes = image_to_bytes(normalize_cloud_path(result["image_path"]))
                         st.download_button(
                             label="Download Image",
                             data=image_bytes,
