@@ -58,6 +58,23 @@ def load_all_data():
         image_labels
     )
 
+# =========================================================
+# Utility Function for Cloud Path
+# =========================================================
+def normalize_cloud_path(path):
+    """
+    Convert Windows-style stored paths into paths that work on Streamlit Cloud/Linux.
+    """
+    if path is None:
+        return None
+
+    # Convert backslashes to forward slashes first
+    path = path.replace("\\", "/")
+
+    # Normalize the path for the current OS
+    path = os.path.normpath(path)
+
+    return path
 
 try:
     (
@@ -104,21 +121,6 @@ def load_rgb_image(image_path):
 def image_to_bytes(image_path):
     with open(image_path, "rb") as f:
         return f.read()
-        
-def normalize_cloud_path(path):
-    """
-    Convert Windows-style stored paths into paths that work on Streamlit Cloud/Linux.
-    """
-    if path is None:
-        return None
-
-    # Convert backslashes to forward slashes first
-    path = path.replace("\\", "/")
-
-    # Normalize the path for the current OS
-    path = os.path.normpath(path)
-
-    return path
 
 def create_zip_from_results(results):
     zip_buffer = BytesIO()
