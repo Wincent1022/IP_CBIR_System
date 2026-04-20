@@ -21,7 +21,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🖼️ Content-Based Image Retrieval (CBIR) System")
+st.title("🖼️ Content-Based Image Retrieval (CBIR) System For Vehicle")
 st.write("Upload an image, choose an algorithm, and retrieve visually similar images from the dataset.")
 
 
